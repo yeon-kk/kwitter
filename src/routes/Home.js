@@ -5,6 +5,7 @@ import Kweet from "components/Kweet";
 const Home = ({ userObj }) => {
   const [kweet, setKweet] = useState("");
   const [kweets, setKweets] = useState([]);
+  const [attachment, setAttachment] = useState("");
 
   useEffect(() => {
     onSnapshot(collection(dbService, "kweets"), (snapshot) => {
@@ -40,8 +41,20 @@ const Home = ({ userObj }) => {
     const {
       target: { files },
     } = event;
-    const thefile = files[0]; //파일 1개만 이용
+    const theFile = files[0]; //파일 1개만 이용
+    const reader = new FileReader(); //사진 출력
+
+    reader.onloadend = (finishedEvent) => {
+      //load의 end를 알려주는 event
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result); //currentTarget.result에 있던 URL 주소
+    };
+    reader.readAsDataURL(theFile); //
   };
+
+  const onClearAttachment = () => setAttachment("");
 
   return (
     <>
@@ -55,6 +68,12 @@ const Home = ({ userObj }) => {
         />
         <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Kweet" />
+        {attachment && (
+          <div>
+            <img src={attachment} height="50px" alt="attachedImg" />
+            <button onClick={onClearAttachment}>clear</button>
+          </div>
+        )}
       </form>
       <div>
         {kweets.map((kweet) => (
