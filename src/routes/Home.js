@@ -36,6 +36,13 @@ const Home = ({ userObj }) => {
     setKweet(value);
   };
 
+  const onFileChange = (event) => {
+    const {
+      target: { files },
+    } = event;
+    const thefile = files[0]; //파일 1개만 이용
+  };
+
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -46,7 +53,7 @@ const Home = ({ userObj }) => {
           placeholder="what's on your mind?"
           maxLength={120}
         />
-
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Kweet" />
       </form>
       <div>
