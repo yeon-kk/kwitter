@@ -13,6 +13,13 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
+import {
+  ref,
+  getStorage,
+  uploadString,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -42,4 +49,9 @@ export {
   onSnapshot,
   deleteDoc,
   updateDoc,
+  ref,
+  uploadString,
+  getDownloadURL,
+  deleteObject,
 };
+export const storageService = getStorage();
