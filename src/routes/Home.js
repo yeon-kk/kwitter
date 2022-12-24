@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { dbService, addDoc, collection, onSnapshot } from "fbase";
+import {
+  dbService,
+  addDoc,
+  collection,
+  onSnapshot,
+  storageService,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "fbase";
 import Kweet from "components/Kweet";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ userObj }) => {
   const [kweet, setKweet] = useState("");
@@ -20,13 +30,29 @@ const Home = ({ userObj }) => {
   //firestore에 메시지 저장
   const onSubmit = async (event) => {
     event.preventDefault();
+    let attachmentUrl = "";
+    if (attachment !== "") {
+      const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+      // console.log(`${userObj.uid}/${uuidv4()}`);
+      const response = await uploadString(
+        attachmentRef,
+        attachment,
+        "data_url"
+      );
+      // console.log(response);
+      // console.log(await getDownloadURL(response.ref));
+      attachmentUrl = await getDownloadURL(response.ref);
+    }
+
     await addDoc(collection(dbService, "kweets"), {
       //collection()은 promise를 반환하기 때문에 await 필요
       text: kweet,
       createdAt: Date.now(),
       creatorId: userObj.uid,
+      attachmentUrl,
     });
     setKweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {
